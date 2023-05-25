@@ -104,6 +104,10 @@ body {
   text-decoration: none;
 }
 
+.scrollBar-1 {
+  display: flex;
+}
+
 @media screen and (max-width: 1200px) {
   .detail-image {
     width: 300px;
