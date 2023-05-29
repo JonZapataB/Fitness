@@ -3,9 +3,15 @@ import { Box, Button, Stack, TextField, Typography } from "@mui/material";
 import { exercisesOptions, fetchData } from "../utils/fetchData";
 import HorizontalScrollbar from "./HorizontalScrollbar";
 
-const SearchExercises = ({ setExercises, bodyPart, setBodyPart }) => {
-  const [search, setSearch] = useState("");
+const SearchExercises = ({
+  setExercises,
+  bodyPart,
+  setBodyPart,
+  search,
+  setSearch,
+}) => {
   const [bodyParts, setBodyParts] = useState([]);
+  const [searchWord, setSearchWord] = useState("");
 
   useEffect(() => {
     const fetchExercisesData = async () => {
@@ -13,31 +19,44 @@ const SearchExercises = ({ setExercises, bodyPart, setBodyPart }) => {
         "https://exercisesdb.p.rapidapi.com/exercises/bodyPartList",
         exercisesOptions
       );
-      setBodyParts(["All", ...bodyPartsData]);
+      setBodyParts(["all", ...bodyPartsData]);
     };
 
     fetchExercisesData();
   }, []);
 
   const handleSearch = async () => {
-    if (search) {
-      const exercisesData = await fetchData(
-        "https://exercisesdb.p.rapidapi.com/exercises",
-        exercisesOptions
-      );
-
+    let buscar = searchWord.trim() !== "" ? searchWord : search;
+    if (buscar) {
+      let exercisesData = null;
+      if (bodyPart === "all") {
+        exercisesData = await fetchData(
+          "https://exercisesdb.p.rapidapi.com/exercises",
+          exercisesOptions
+        );
+      } else {
+        exercisesData = await fetchData(
+          `https://exercisesdb.p.rapidapi.com/exercises/bodyPart/${bodyPart}`,
+          exercisesOptions
+        );
+      }
       const SearchExercises = exercisesData.filter(
         (exercise) =>
-          exercise.name.toLowerCase().includes(search) ||
-          exercise.target.toLowerCase().includes(search) ||
-          exercise.equipment.toLowerCase().includes(search) ||
-          exercise.bodyPart.toLowerCase().includes(search)
+          exercise.name.toLowerCase().includes(buscar) ||
+          exercise.target.toLowerCase().includes(buscar) ||
+          exercise.equipment.toLowerCase().includes(buscar) ||
+          exercise.bodyPart.toLowerCase().includes(buscar)
       );
-
-      setSearch("");
+      setSearch(buscar);
+      setSearchWord("");
       setExercises(SearchExercises);
     }
   };
+
+  useEffect(() => {
+    handleSearch();
+    console.log("bodyPart", bodyPart);
+  }, [bodyPart]);
 
   return (
     <Stack alignItems="center" mt="37px" justifyContent="center" p="20px">
@@ -58,8 +77,8 @@ const SearchExercises = ({ setExercises, bodyPart, setBodyPart }) => {
             borderRadius: "40px",
           }}
           height="76px"
-          value={search}
-          onChange={(e) => setSearch(e.target.value.toLowerCase())}
+          value={searchWord}
+          onChange={(e) => setSearchWord(e.target.value.toLowerCase())}
           placeholder="Search Exercises"
           type="text"
         />
@@ -85,6 +104,7 @@ const SearchExercises = ({ setExercises, bodyPart, setBodyPart }) => {
           data={bodyParts}
           bodyPart={bodyPart}
           setBodyPart={setBodyPart}
+          isBodyParts
         />
       </Box>
     </Stack>

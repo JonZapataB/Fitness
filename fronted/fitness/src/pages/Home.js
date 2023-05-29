@@ -9,6 +9,8 @@ import { useEffect } from "react";
 const Home = () => {
   const [bodyPart, setBodyPart] = useState("all");
   const [exercises, setExercises] = useState([]);
+  const [search, setSearch] = useState("");
+
   useEffect(() => {
     console.log("exercises", exercises);
   }, [exercises]);
@@ -20,6 +22,8 @@ const Home = () => {
       <HeroBanner />
       <SearchExercises
         setExercises={setExercises}
+        search={search}
+        setSearch={setSearch}
         bodyPart={bodyPart}
         setBodyPart={setBodyPart}
       />
