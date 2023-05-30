@@ -34,7 +34,7 @@ const ExerciseVideos = ({ exerciseVideos, name }) => {
               <Typography variant="h5" color="#000">
                 {item.video.title}
               </Typography>
-              <Typography variant="h4" color="#000">
+              <Typography variant="h7" color="#000">
                 {item.video.channelName}
               </Typography>
             </Box>
